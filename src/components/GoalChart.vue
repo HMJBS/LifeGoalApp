@@ -70,6 +70,13 @@
 table {
   width: 100%;
   border: 2px solid Black;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+thead th{
+  padding: 10px 5px;
+  font: 1.5em sans-serif, bold;
 }
 
 tbody tr:nth-child(odd) {
@@ -80,10 +87,9 @@ tbody tr:nth-child(even) {
   background-color: White;
 }
 
-tbody td {
-  border-style: none;
-  padding-left: 0;
-  padding-right: 0;
+tbody tr {
+  padding: 5px 3px;
+  font: 1.2em serif;
 }
 
 </style>
