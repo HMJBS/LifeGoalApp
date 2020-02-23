@@ -2,7 +2,7 @@
 
   <div id='chart'>
     <h1>{{ userName }}'s Life Goal</h1>
-  <TreeChart :json='goalsData' />
+  <TreeChart v-if='goalsData' :json='goalsData' />
   </div>
 
 </template>
@@ -10,15 +10,25 @@
 <script>
 
   import TreeChart from 'vue-tree-chart'
+  import axios from 'axios'
 
   export default {
     components: {
       TreeChart
     },
+    data() {
+      return {
+        goalsData: null,
+      }
+    },
     name: 'GoalChart',
     props: {
-      userName: String,
-      goalsData: Object
+      userName: String
+    },
+    mounted() {
+      axios.get('http://localhost:7005/lifeGoal.json').then((res) => {
+        this.goalsData = res.data;
+      });
     }
   }
 
