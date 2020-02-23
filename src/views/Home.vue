@@ -1,7 +1,7 @@
 <template>
 <div class="home">
   <GoalChart
-  userName="Pootis"
+  userName="Jeremy"
   :goalsData="this.rawGoalData" />
   <a target="_blank" href="https://icons8.com/icons/set/lifecycle">Life Cycle</a>, <a target="_blank" href="https://icons8.com/icons/set/experience-skill">Experience Skill</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a>
 
