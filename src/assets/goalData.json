@@ -1,11 +1,11 @@
-{"text": "Be Great!", "finished": false, "child":
+{"name": "Be Great!", "finished": false, "child":
   [
-    {"text": "OSS master", "finished": false, "child":
+    {"name": "OSS master", "finished": false, "child":
       [
-        {"text": "Learn Linux Commands", "finished": false, "child":
+        {"name": "Learn Linux Commands", "finished": false, "child":
           [
-            {"text": "get LPIC", "finished": false},
-            {"text": "build my own Rpi server", "finished": true}
+            {"name": "get LPIC", "finished": false},
+            {"name": "build my own Rpi server", "finished": true}
           ]
         }
       ]
