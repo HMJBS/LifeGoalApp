@@ -1,6 +1,8 @@
 <template>
 <div class="home">
-  <GoalChart userName="Pootis" v-bind:goalsData="this.rawGoalData" />
+  <GoalChart
+  userName="Pootis"
+  :goalsData="this.rawGoalData" />
 </div>
 </template>
 

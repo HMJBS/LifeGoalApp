@@ -1,8 +1,8 @@
-{"name": "Be Great!", "finished": false, "child":
+{"name": "Be Great!", "finished": false, "children":
   [
-    {"name": "OSS master", "finished": false, "child":
+    {"name": "OSS master", "finished": false, "children":
       [
-        {"name": "Learn Linux Commands", "finished": false, "child":
+        {"name": "Learn Linux Commands", "finished": false, "children":
           [
             {"name": "get LPIC", "finished": false},
             {"name": "build my own Rpi server", "finished": true}
