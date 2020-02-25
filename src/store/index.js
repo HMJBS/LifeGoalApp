@@ -12,7 +12,7 @@ export default new Vuex.Store({
      * passed to REST /{username}
      * @type {String}
      */
-    userName: null,
+    userName: '',
 
     /**
      * user's objects
@@ -40,8 +40,8 @@ export default new Vuex.Store({
         const userName = state.userName;
         if (!userName) { throw `Invalid UserName ${userName}`; }
         const res = await axios.get(`http://localhost:7005/${state.userName}`);
-        const { lifeObjects } = res;
-        commit('setLifeObjects', { lifeObjects });
+        const { data } = res;
+        commit('setLifeObjects', { lifeObjects: data });
 
       } catch (err) {
 
