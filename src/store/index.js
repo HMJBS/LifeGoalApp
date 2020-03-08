@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
+
+/* eslint-disable no-console */
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -39,9 +42,11 @@ export default new Vuex.Store({
 
         const userName = state.userName;
         if (!userName) { throw `Invalid UserName ${userName}`; }
-        const res = await axios.get(`http://localhost:7005/${state.userName}`);
+        console.log(`http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/user/${state.userName}`);
+        const res = await axios.get(`http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/user/${state.userName}`);
         const { data } = res;
-        commit('setLifeObjects', { lifeObjects: data });
+        const objLifeObjects = JSON.parse( data.lifeObjects );
+        commit('setLifeObjects', { lifeObjects: objLifeObjects });
 
       } catch (err) {
 
