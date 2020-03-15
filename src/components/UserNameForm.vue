@@ -1,9 +1,11 @@
 <template>
   <div class="user">
-    <form @submit.prevent="submitUserName">
+    <form>
       <label for="userNameInput">User</label>
       <input id="userNameInput" type="text" v-model="userName">
-      <input type="submit" value="submit" >
+      <input type="submit" value="submit" @click="submitUserName" >
+      <input type="button" value="register" @click="registerUser" />
+      <span id="queryResultLable"> {{ queryStatus }}</span>
     </form>
   </div>
 </template>
@@ -14,13 +16,24 @@ export default {
   name: 'UserNameForm',
   data() {
     return {
-      userName : ''
+      userName : '',
+      queryStatus : ''
     }
   },
   methods: {
     submitUserName() {
       this.$store.commit('setUserName', { userName: this.userName });
-      this.$store.dispatch('getLIfeObjectByCurrentUser');
+      this.$store.dispatch('getLifeObjectByCurrentUser');
+    },
+    registerUser() {
+      try {
+        this.$store.dispatch('registerNewUser', this.userName);
+        this.queryStatus = 'success';
+
+      } catch (err) {
+
+        this.queryStatus = 'failure';
+      }
     }
   }
 }

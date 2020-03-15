@@ -36,7 +36,7 @@ export default new Vuex.Store({
 
   },
   actions: {
-    async getLIfeObjectByCurrentUser({ commit, state }) {
+    async getLifeObjectByCurrentUser({ commit, state }) {
 
       try {
 
@@ -52,8 +52,21 @@ export default new Vuex.Store({
 
         throw err;
       }
+    },
+
+    async registerNewUser({ commit }, userName) {
+
+      try {
+        // post by given userName first
+        await axios.post('/user', {
+          userName
+        });
+        commit('setUserName', { userName });
+
+      } catch (err) {
+
+        throw err;
+      }
     }
-  },
-  modules: {
   }
-})
+});
