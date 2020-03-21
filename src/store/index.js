@@ -2,6 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
+const ax = axios.create({
+  baseURL: `http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/`,
+  timeout: 1000
+});
 
 /* eslint-disable no-console */
 
@@ -43,7 +47,7 @@ export default new Vuex.Store({
         const userName = state.userName;
         if (!userName) { throw `Invalid UserName ${userName}`; }
         console.log(`http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/user/${state.userName}`);
-        const res = await axios.get(`http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/user/${state.userName}`);
+        const res = await ax.get(`/user/${state.userName}`);
         const { data } = res;
         const objLifeObjects = JSON.parse( data.lifeObjects );
         commit('setLifeObjects', { lifeObjects: objLifeObjects });
@@ -54,19 +58,20 @@ export default new Vuex.Store({
       }
     },
 
-    async registerNewUser({ commit }, userName) {
+    registerNewUser({ commit }, userName) {
 
-      try {
+      return new Promise( (resolve, reject) => {
+
         // post by given userName first
-        await axios.post('/user', {
+        ax.post('/user', {
           userName
+        }).then(() => {
+          commit('setUserName', { userName });
+          resolve();
+        }).catch((err) => {
+          reject(err);
         });
-        commit('setUserName', { userName });
-
-      } catch (err) {
-
-        throw err;
-      }
+      });
     }
   }
 });

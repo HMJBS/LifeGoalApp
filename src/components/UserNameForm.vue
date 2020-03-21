@@ -26,14 +26,12 @@ export default {
       this.$store.dispatch('getLifeObjectByCurrentUser');
     },
     registerUser() {
-      try {
-        this.$store.dispatch('registerNewUser', this.userName);
+      this.$store.dispatch('registerNewUser', this.userName).
+      then(() => {
         this.queryStatus = 'success';
-
-      } catch (err) {
-
+      }).catch(() => {
         this.queryStatus = 'failure';
-      }
+      });
     }
   }
 }
