@@ -17,11 +17,6 @@ export default {
   components: {
     GoalChart,
     UserNameForm
-  },
-  data(){
-    return {
-      userName: 'jeremy'
-    }
   }
 }
 </script>
