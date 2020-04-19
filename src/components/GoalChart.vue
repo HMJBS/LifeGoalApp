@@ -2,16 +2,25 @@
 
   <div id='chart'>
     <TreeChart v-if='objectsJson' :json='objectsJson' @click-node="addObjectModal" />
-    <modal name="addObject" :draggable="true" :resizable="true">
-      <h2>Add new Object</h2>
-      <form>
-        <label for="newObjectString">new object</label>
-        <input id="newObjectString" type="text" v-model="newObjectStr">
-        <input type="submit" value="Register" @click="registerNewObject" 
-            @submit.prevent="registerNewObject" >
-      </form>
-        
-    </modal>
+    <b-modal id="addOjectModal" title="Add new object" @ok="registerNewObject">
+      <b-form>
+
+        <b-form-group
+          id="input-group-new-object"
+          label="New Life Object"
+          label-for="input-new-object-string"
+        >
+          <b-form-input
+            id="input-new-object-string"
+            v-model="newObjectStr"
+            type="text"
+            required
+            placeholder="New Object"
+          ></b-form-input>
+        </b-form-group>
+
+      </b-form>
+    </b-modal>
   </div>
 
 </template>
@@ -37,10 +46,10 @@
     name: 'GoalChart',
     methods: {
       addObjectModal: function() {
-        this.$modal.show('addObject');
+        this.$bvModal.show('addOjectModal');
       },
       hideObjectModal: function() {
-        this.$modal.hide('addObject');
+        this.$bvModal.hide('addOjectModal');
       },
       registerNewObject: function() {
         
