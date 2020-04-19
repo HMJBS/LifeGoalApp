@@ -1,7 +1,17 @@
 <template>
 
   <div id='chart'>
-    <TreeChart v-if='objectsJson' :json='objectsJson' />
+    <TreeChart v-if='objectsJson' :json='objectsJson' @click-node="addObjectModal" />
+    <modal name="addObject" :draggable="true" :resizable="true">
+      <h2>Add new Object</h2>
+      <form>
+        <label for="newObjectString">new object</label>
+        <input id="newObjectString" type="text" v-model="newObjectStr">
+        <input type="submit" value="Register" @click="registerNewObject" 
+            @submit.prevent="registerNewObject" >
+      </form>
+        
+    </modal>
   </div>
 
 </template>
@@ -19,9 +29,36 @@
         return this.$store.state.lifeObjects;
       }
     },
+    data() {
+      return {
+        newObjectStr: ''
+      }
+    },
     name: 'GoalChart',
-    mounted() {
-
+    methods: {
+      addObjectModal: function() {
+        this.$modal.show('addObject');
+      },
+      hideObjectModal: function() {
+        this.$modal.hide('addObject');
+      },
+      registerNewObject: function() {
+        
+        // eslint-disable-next-line no-console
+        console.log(this);
+        // check clikced node has children
+        if (this.children) {
+          
+          this.children.push({
+            extend: true,
+            finished: false,
+            image_url: "study.png",
+            name: this.newObjectStr
+          });
+          this.$store.commit('setLifeObject', {lifeObjects: this.children});
+        }
+        this.$modal.hide('addObject');
+      }
     }
   }
 
