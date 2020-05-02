@@ -135,11 +135,12 @@ export default class LifeObject {
     if (parentId) {
 
       // search lifeObject with given parentId from this.tree
-      target = this.inspectLifeObjectTree(this.tree, parentId);
+      target = this.inspectLifeObjectTree(this.data, parentId);
 
       // if target not found, abort
       if (!target) {
 
+        /* eslint-disable-next-line no-console */
         console.error(`[appendNewLifeObject] No such lifeobject ${parentId}`);
         return false;
 
@@ -148,7 +149,7 @@ export default class LifeObject {
     } else {
 
       // appending new life object to root
-      target = this.tree;
+      target = this.data;
     }
 
     // add new life object
@@ -157,7 +158,7 @@ export default class LifeObject {
       target.children = [];
     }
 
-    target.children.append({
+    target.children.push({
       _id: id,
       name,
       finished,
@@ -177,6 +178,8 @@ export default class LifeObject {
    */
   inspectLifeObjectTree(targetTree, targetId) {
 
+    console.debug(`[inspectLifeObject] target=${targetTree.name} id=${targetTree._id}`);
+    console.debug(`targetTree._id === targetId -> ${targetTree._id === targetId}`)
     // check targetTree's root is target
     if (targetTree._id === targetId) {
 
@@ -188,16 +191,19 @@ export default class LifeObject {
     // check target Tree is branch
     if (targetTree.children) {
 
-      targetTree.children.forEach((child) => {
+      let result;
+      for (const child of targetTree.children) {
         
-        const result = this.inspectLifeObjectTree(child, targetId);
+        result = this.inspectLifeObjectTree(child, targetId);
+        console.debug(`[inspectLifeObject] retruns=${result}`);
         
         // if child call returns tree object, it means target found,
         // therefore, just return result.
         if (result) {
-          return result;
+          break;
         }
-      });
+      }
+      return result;
 
     }
 

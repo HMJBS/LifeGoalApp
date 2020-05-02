@@ -57,11 +57,10 @@
       registerNewObject: function() {
         
         // check clikced node has children
-          
+        this.$store.dispatch('registerNewObject', 
+          { name: this.newObjectStr, finished: false, parentId: this.clickedNode._id });
+
         this.$modal.hide('addObject');
-
-      
-
       }
     }
   }

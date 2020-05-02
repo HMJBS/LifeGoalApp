@@ -37,6 +37,12 @@ export default new Vuex.Store({
 
     setLifeObjects(state, payload) {
       state.lifeObjects = new LifeObject(payload.lifeObjects, state.userName);
+    },
+
+    setNewLifeObject(state, payload) {
+      state.lifeObjects.appendNewLifeObject(
+        payload.name, payload.finished, payload.id, payload.parentId
+      );
     }
 
   },
@@ -81,9 +87,10 @@ export default new Vuex.Store({
      * register new life object under given lifeObject
      * @param {*} param0 vuex internal variable
      * @param {String} name content of life object
+     * @param {Boolean} finsihed is finished
      * @param {String} parentId Id of parent life object
      */
-    async registerNewObject( { state, commit }, name, finished, parentId ) {
+    async registerNewObject( { state, commit }, {name, finished, parentId} ) {
 
       let result;
 
@@ -92,18 +99,20 @@ export default new Vuex.Store({
         finished,
       };
 
+      console.log(payload);
+
       // call API
       try {        
 
         if( parentId ) {
 
           // add new life object to non-root object
-          result = await ax.put(`/user/${this.userName}/${parentId}`, payload);
+          result = await ax.put(`/user/${state.userName}/${parentId}`, payload);
         
         } else {
 
           // add new life object to root
-          result = await ax.put(`/user/${this.userName}`, payload);
+          result = await ax.put(`/user/${state.userName}`, payload);
 
         }
       } catch (err) {
@@ -118,8 +127,7 @@ export default new Vuex.Store({
       }
 
       // after API return success, put new life object to local tree
-      // TODO: implement above function
-      });
+      commit('setNewLifeObject', {name, finished, parentId, id: result._id});
     }
   }
 });
