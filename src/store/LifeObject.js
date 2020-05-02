@@ -120,5 +120,89 @@ export default class LifeObject {
     
     this.data = tree;
   }
+
+  /**
+   * add new LifeObject to local tree
+   * @param {String} name life object name, titile in tree-chart
+   * @param {Boolean} finished is life object finished its goal?
+   * @param {Number} id id of new life object, returns from DB
+   * @param {Number} [parentId] parent
+   * @returns {Boolean} is success?
+   */
+  appendNewLifeObject(name, finished, id, parentId) {
+
+    let target;
+    if (parentId) {
+
+      // search lifeObject with given parentId from this.tree
+      target = this.inspectLifeObjectTree(this.tree, parentId);
+
+      // if target not found, abort
+      if (!target) {
+
+        console.error(`[appendNewLifeObject] No such lifeobject ${parentId}`);
+        return false;
+
+      }
+
+    } else {
+
+      // appending new life object to root
+      target = this.tree;
+    }
+
+    // add new life object
+    if (!target.children) {
+
+      target.children = [];
+    }
+
+    target.children.append({
+      _id: id,
+      name,
+      finished,
+    });
+
+    return true;
+  }
+
+  /**
+   * inspect root life object of targetTree,
+   * if targetTree has children, inspect it recursively.
+   * returns link to target life object if exist
+   * @param {Object} targetTree 
+   * @param {Number} targetId 
+   * @returns {Object|null}
+   * @private
+   */
+  inspectLifeObjectTree(targetTree, targetId) {
+
+    // check targetTree's root is target
+    if (targetTree._id === targetId) {
+
+      // return link to target life object node
+      return targetTree;
+
+    }
+
+    // check target Tree is branch
+    if (targetTree.children) {
+
+      targetTree.children.forEach((child) => {
+        
+        const result = this.inspectLifeObjectTree(child, targetId);
+        
+        // if child call returns tree object, it means target found,
+        // therefore, just return result.
+        if (result) {
+          return result;
+        }
+      });
+
+    }
+
+    // target tree is leaf / no children are target
+    return null;
+  }
 }
 
