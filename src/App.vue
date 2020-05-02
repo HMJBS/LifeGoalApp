@@ -14,7 +14,7 @@
 
         <!-- Right Alligned-->
         <b-navbar-nav class="ml-auto">
-          <b-avatar variant="primary" rounded>{{ userName }}</b-avatar>
+          <b-avatar variant="primary" rounded>Gerely</b-avatar>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
