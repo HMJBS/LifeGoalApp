@@ -29,6 +29,13 @@ export default class LifeObject {
   
     // sorts elements by layer depth
     listLifeObjects.forEach((elem) => {
+
+      // copy cloneDepth.children -> cloneDepth.ref_children
+      // original cloneDepth.children is overwriten by actual child instance
+      elem.ref_children = elem.children;
+
+      // clear old chldren array
+      elem.children = [];
   
       const depth = elem.layerDepth;
       if (!depthSorted[depth]) { depthSorted[depth] = []; }
@@ -53,18 +60,15 @@ export default class LifeObject {
           clonedNode.image_url = iconByDepth[0];
   
           // clear children, it must be tree structure
-          clonedNode.children = [];
           tree.children.push(clonedNode);
   
         } else {
-  
+
           // add image_url
           clonedNode.image_url = iconByDepth[cloneDepth];
   
-          // clear children, it must be tree structure
-          clonedNode.children = [];
-  
           let parentNode = null;
+          let isFound = false;
   
           // search parent node by "_id"
   
@@ -72,8 +76,15 @@ export default class LifeObject {
   
             tree.children.forEach((element1) => {
   
-              if (!parentNode) {
-                parentNode = element1.children.find(element2 => element2.id === clonedNode._id);
+              if (!isFound) {
+
+                const result = element1.ref_children.find(element2 => element2 === clonedNode._id);
+                if (result) {
+
+                  // if current element has target id, this element should be parent
+                  parentNode = element1;
+                  isFound = true;
+                }
               }
             });
   
@@ -83,7 +94,13 @@ export default class LifeObject {
               element1.children.forEach((element2) => {
   
                 if (!parentNode) {
-                  parentNode = element2.children.find(element3 => element3.id === clonedNode._id);
+                  const result = element2.ref_children.find(element3 => element3 === clonedNode._id);
+                  if (result) {
+
+                    // if current element has target id, this element should be parent
+                    parentNode = element2;
+                    isFound = true;
+                  }
                 }
               });
             });
@@ -95,12 +112,17 @@ export default class LifeObject {
                 element2.children.forEach((element3) => {
   
                   if (!parentNode) {
-                    parentNode = element3.children.find(element4 => element4.id === clonedNode._id);
+                    const result = element3.ref_children.find(element4 => element4 === clonedNode._id);
+                    if (result) {
+
+                      // if current element has target id, this element should be parent
+                      parentNode = element3;
+                      isFound = true;
+                    }
                   }
                 });
               });
             });
-  
           }
   
           if (!parentNode) {
@@ -112,7 +134,7 @@ export default class LifeObject {
             return;
   
           } 
-  
+
           parentNode.children.push(clonedNode);
         }
       });
