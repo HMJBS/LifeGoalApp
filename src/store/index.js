@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import LifeObject from './LifeObject.js'
 
 const ax = axios.create({
   baseURL: `http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/`,
@@ -24,9 +25,9 @@ export default new Vuex.Store({
     /**
      * user's objects
      * formatted for tree templete
-     * @type {Object}
+     * @type {LifeObject}
      */
-    lifeObjects: {}
+    lifeObjects: null
   },
   mutations: {
 
@@ -35,7 +36,7 @@ export default new Vuex.Store({
     },
 
     setLifeObjects(state, payload) {
-      state.lifeObjects = payload.lifeObjects;
+      state.lifeObjects = new LifeObject(payload.lifeObjects, state.userName);
     }
 
   },
@@ -50,10 +51,9 @@ export default new Vuex.Store({
         console.log(`GET /user/${state.userName}`);
 
         const res = await ax.get(`/user/${state.userName}`);
-        const { data } = res;
-        const objLifeObjects = buildTreeStruct( data.lifeObjects, userName );
+        const lifeObjects = res.data.lifeObjects;
 
-        commit('setLifeObjects', { lifeObjects: objLifeObjects });
+        commit('setLifeObjects', { lifeObjects });
 
       } catch (err) {
 
@@ -75,119 +75,51 @@ export default new Vuex.Store({
           reject(err);
         });
       });
+    },
+
+    /**
+     * register new life object under given lifeObject
+     * @param {*} param0 vuex internal variable
+     * @param {String} name content of life object
+     * @param {String} parentId Id of parent life object
+     */
+    async registerNewObject( { state, commit }, name, finished, parentId ) {
+
+      let result;
+
+      const payload = {
+        name,
+        finished,
+      };
+
+      // call API
+      try {        
+
+        if( parentId ) {
+
+          // add new life object to non-root object
+          result = await ax.put(`/user/${this.userName}/${parentId}`, payload);
+        
+        } else {
+
+          // add new life object to root
+          result = await ax.put(`/user/${this.userName}`, payload);
+
+        }
+      } catch (err) {
+        throw err;
+      }
+
+      if (result.status !== 200) {
+
+        console.error(`[registerNewObject] failed with ${result.status}`);
+        return false;
+
+      }
+
+      // after API return success, put new life object to local tree
+      // TODO: implement above function
+      });
     }
   }
 });
-
-/**
- * create tree object used for vue-tree
- * @param {Array} lifeObjects raw array lifeObjects from GET /user/:userName
- * @param {String} userName
- * @returns {Object} tree object readable by tree-vue 
- */
-function buildTreeStruct(lifeObjects, userName) {
-
-  const tree = {
-    name: `${userName}'s Life Object`,
-    children: [],
-  };
-
-  const depthSorted = [];
-
-  const imageByDepth = [
-    "lifegoal.png",
-    "skill.png",
-    "knowledge.png",
-    "study.png",
-  ];
-
-  // sorts elements by layer depth
-  lifeObjects.forEach((elem) => {
-
-    const depth = elem.layerDepth;
-    if (!depthSorted[depth]) { depthSorted[depth] = []; }
-    depthSorted[depth].push(elem);
-  
-  });
-
-  // push elements to tree from deep element
-  depthSorted.forEach((depth) => {
-
-    depth.forEach((node) => {
-
-      const clonedNode = {};
-      const cloneDepth = node.layerDepth;
-
-      // deep copy to clonedElem
-      Object.assign(clonedNode, node);
-
-      if (cloneDepth === 0) {
-
-        // add image_url
-        clonedNode.image_url = imageByDepth[0];
-
-        // clear children, it must be tree structure
-        clonedNode.children = [];
-        tree.children.push(clonedNode);
-
-      } else {
-
-        // add image_url
-        clonedNode.image_url = imageByDepth[cloneDepth];
-
-        // clear children, it must be tree structure
-        clonedNode.children = [];
-
-        let parentNode = null;
-
-        // search parent node by "_id"
-
-        if (cloneDepth === 1) {
-
-          tree.children.forEach((element1) => {
-
-            if (!parentNode) {
-              parentNode = element1.children.find(element2 => element2.id === clonedNode._id);
-            }
-          });
-
-        } else if (cloneDepth === 2) {
-
-          tree.children.forEach((element1) => {
-            element1.children.forEach((element2) => {
-
-              if (!parentNode) {
-                parentNode = element2.children.find(element3 => element3.id === clonedNode._id);
-              }
-            });
-          });
-
-        } else if (cloneDepth === 3) {
-
-          tree.children.forEach((element1) => {
-            element1.children.forEach((element2) => {
-              element2.children.forEach((element3) => {
-
-                if (!parentNode) {
-                  parentNode = element3.children.find(element4 => element4.id === clonedNode._id);
-                }
-              });
-            });
-          });
-
-        }
-
-        if (!parentNode) {
-
-          console.error(`[buildTreeStruct] Node without parent`);
-          console.error(clonedNode);
-          return;
-
-        } 
-
-        parentNode.children.push(clonedNode);
-      }
-    });
-  });
-  return tree;
-}
