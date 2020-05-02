@@ -1,7 +1,7 @@
 <template>
 
   <div id='chart'>
-    <TreeChart v-if='objectsJson' :json='objectsJson' @click-node="addObjectModal" />
+    <TreeChart v-if='objectsJson' :json='objectsJson.data' @click-node="showAddObjectModal" />
     <b-modal id="addOjectModal" title="Add new object" @ok="registerNewObject">
       <b-form>
 
@@ -40,12 +40,15 @@
     },
     data() {
       return {
-        newObjectStr: ''
+        newObjectStr: '',
+        clickedNode: null
       }
     },
     name: 'GoalChart',
     methods: {
-      addObjectModal: function() {
+      showAddObjectModal: function(payload) {
+
+        this.clickedNode = payload;
         this.$bvModal.show('addOjectModal');
       },
       hideObjectModal: function() {
@@ -53,20 +56,12 @@
       },
       registerNewObject: function() {
         
-        // eslint-disable-next-line no-console
-        console.log(this);
         // check clikced node has children
-        if (this.children) {
           
-          this.children.push({
-            extend: true,
-            finished: false,
-            image_url: "study.png",
-            name: this.newObjectStr
-          });
-          this.$store.commit('setLifeObject', {lifeObjects: this.children});
-        }
         this.$modal.hide('addObject');
+
+      
+
       }
     }
   }
