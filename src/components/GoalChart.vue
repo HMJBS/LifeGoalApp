@@ -7,7 +7,6 @@
       img-alt="Image"
       img-top
       tag="Goal"
-      style="max-width: 20rem;"
       class="mb-2"
     >
       <b-card-text>Needed Skills</b-card-text>
@@ -37,6 +36,7 @@
 
       <b-card title="Business Analysitics skills" sub-title="REBOK I guess."></b-card>
     </b-card>
+    
   </div>
 </template>
 
