@@ -1,11 +1,9 @@
 <template>
   <div class="mb-4">
+    <b-card-group deck>
     <b-card
       title="Be Good Programmer"
       sub-title="Be skillful programmer enough to work as professional."
-      img-src="https://picsum.photos/600/300/?image=25"
-      img-alt="Image"
-      img-top
       tag="Goal"
       class="mb-2"
     >
@@ -36,6 +34,40 @@
 
       <b-card title="Business Analysitics skills" sub-title="REBOK I guess."></b-card>
     </b-card>
+        <b-card
+      title="Be Good Programmer"
+      sub-title="Be skillful programmer enough to work as professional."
+      tag="Goal"
+      class="mb-2"
+    >
+      <b-card-text>Needed Skills</b-card-text>
+      <b-card title="Business Analysitics skills" sub-title="REBOK I guess.">
+        <b-icon-arrow-down-short v-b-toggle.collapse-1 class="h3" />
+        <b-collapse id="collapse-1" class="mb-2">
+          <b-card title="Learn Group Facilitation Skill" sub-title="Goup">
+            <b-icon-arrow-down-short v-b-toggle.collapse-1-1 class="h3" />
+            <b-collapse id="collapse-1-1" class="mb-2">
+              <b-card
+                title="Read Business Analystic Vol.2"
+                sub-title="Read'em All"
+              >
+              </b-card>
+              <b-card
+                title="Read Business Analystic Vol.2"
+                sub-title="Read'em All"
+              >
+              </b-card>
+              
+            </b-collapse>
+          </b-card>
+        </b-collapse>
+      </b-card>
+
+      <b-card title="Soft skilz, mate" sub-title="REBOK I guess."></b-card>
+
+      <b-card title="Business Analysitics skills" sub-title="REBOK I guess."></b-card>
+    </b-card>
+    </b-card-group>
     
   </div>
 </template>
