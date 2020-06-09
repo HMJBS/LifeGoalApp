@@ -25,7 +25,7 @@
           <div class="d-flex justify-content-end">
             <b-icon-plus v-on:click="showAddObjectModal(skillset._id)" class="h3 add-button" variant="success" />
             <b-icon-x class="h3 remove-button" variant="danger" />
-            <b-icon-arrow-down-short v-b-toggle="`collapse-${skillset._id}`" class="h3" />
+            <b-icon icon="arrow-down-short" v-b-toggle="`collapse-${skillset._id}`" class="h3" />
           </div>
           <!-- v-binding v-b-toggle don"t work -->
 
@@ -40,7 +40,7 @@
               <div class="d-flex justify-content-end">
                 <b-icon-plus v-on:click="showAddObjectModal(skill._id)" class="h3 add-button" variant="success" />
                 <b-icon-x class="h3 remove-button" variant="danger" />
-                <b-icon-arrow-down-short v-b-toggle="'collapse-' + skill._id" class="h3" />
+                <b-icon b-icon icon="arrow-down-short" v-b-toggle="'collapse-' + skill._id" class="h3" />
               </div>
               <b-collapse :id="'collapse-' + skill._id " class="mb-2">
                 <!-- study layer -->
@@ -131,7 +131,5 @@ export default {
 </script>
 
 <style scoped>
-b-icon-plus:hover {
-  background-color: gray;
-}
+  
 </style>

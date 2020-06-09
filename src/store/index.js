@@ -52,7 +52,7 @@ export default new Vuex.Store({
       try {
 
         const userName = state.userName;
-        if (!userName) { throw `Invalid UserName ${userName}`; }
+        if (!userName) { throw new Error(`Invalid UserName ${userName}`); }
 
         console.log(`GET /user/${state.userName}`);
 

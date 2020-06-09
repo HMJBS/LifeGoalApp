@@ -29,13 +29,17 @@ export default {
   name: 'UserNameForm',
   data() {
     return {
-      userName : '',
-      queryStatus : ''
+      queryStatus : "",
+    }
+  },
+  computed: {
+    userName: {
+      get () { return this.$store.state.userName },
+      set (value) { this.$store.commit('setUserName', { userName: value })}
     }
   },
   methods: {
     submitUserName() {
-      this.$store.commit('setUserName', { userName: this.userName });
       this.$store.dispatch('getLifeObjectByCurrentUser');
     }
   }
