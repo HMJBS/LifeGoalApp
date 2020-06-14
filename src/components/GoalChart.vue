@@ -11,7 +11,11 @@
         sub-title="None"
       >
         <div class="d-flex justify-content-end">
-          <b-icon-plus v-on:click="showAddObjectModal(lifeGoal._id)" class="h3 add-button" variant="success" />
+          <b-icon-plus
+            v-on:click="showAddObjectModal(lifeGoal._id)"
+            class="h3 add-button"
+            variant="success"
+          />
           <b-icon-x class="h3 remove-button" variant="danger" />
         </div>
         <b-card-text>Needed Skills</b-card-text>
@@ -23,9 +27,16 @@
           sub-title="REBOK I guess."
         >
           <div class="d-flex justify-content-end">
-            <b-icon-plus v-on:click="showAddObjectModal(skillset._id)" class="h3 add-button" variant="success" />
+            <b-icon-plus
+              v-on:click="showAddObjectModal(skillset._id)"
+              class="h3 add-button"
+              variant="success"
+            />
             <b-icon-x class="h3 remove-button" variant="danger" />
-            <b-icon icon="arrow-down-short" v-b-toggle="`collapse-${skillset._id}`" class="h3" />
+            <span v-b-toggle="`collapse-${skillset._id}`" class="expand-button">
+              <b-icon icon="arrow-down-short" class="h3 expand-button-expand" />
+              <b-icon icon="arrow-up-short" class="h3 expand-button-collapse" />
+            </span>
           </div>
           <!-- v-binding v-b-toggle don"t work -->
 
@@ -38,9 +49,16 @@
               sub-title="Goup"
             >
               <div class="d-flex justify-content-end">
-                <b-icon-plus v-on:click="showAddObjectModal(skill._id)" class="h3 add-button" variant="success" />
+                <b-icon-plus
+                  v-on:click="showAddObjectModal(skill._id)"
+                  class="h3 add-button"
+                  variant="success"
+                />
                 <b-icon-x class="h3 remove-button" variant="danger" />
-                <b-icon b-icon icon="arrow-down-short" v-b-toggle="'collapse-' + skill._id" class="h3" />
+                <span v-b-toggle="`collapse-${skill._id}`" class="expand-button">
+                  <b-icon icon="arrow-down-short" class="h3 expand-button-expand" />
+                  <b-icon icon="arrow-up-short" class="h3 expand-button-collapse" />
+                </span>
               </div>
               <b-collapse :id="'collapse-' + skill._id " class="mb-2">
                 <!-- study layer -->
@@ -61,9 +79,8 @@
       </b-card>
     </b-card-group>
 
-        <b-modal :id="ADD_MODAL_ID" title="Add new object" @ok="registerNewObject">
+    <b-modal :id="ADD_MODAL_ID" title="Add new object" @ok="registerNewObject">
       <b-form>
-
         <b-form-group
           id="input-group-new-object"
           label="New Life Object"
@@ -83,11 +100,9 @@
 </template>
 
 <script>
-
 export default {
-  name: 'GoalChart',
-  components: {
-  },
+  name: "GoalChart",
+  components: {},
   computed: {
     objectsJson() {
       return this.$store.state.lifeObjects;
@@ -98,7 +113,7 @@ export default {
       // new life object"s name
       newObjectName: "",
       newObjectId: "",
-      ADD_MODAL_ID: 'addModal'
+      ADD_MODAL_ID: "addModal"
     };
   },
   methods: {
@@ -131,5 +146,21 @@ export default {
 </script>
 
 <style scoped>
-  
+svg.add-button:hover {
+  background-color: lightcyan;
+}
+
+svg.remove-button:hover {
+  background-color: rgb(238, 220, 213); 
+}
+
+span.expand-button:hover {
+  background-color: rgb(187, 187, 187);
+}
+
+.collapsed > .expand-button-collapse,
+:not(.collapsed) > .expand-button-expand 
+{
+  display: none;
+}
 </style>
