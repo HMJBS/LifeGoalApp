@@ -128,6 +128,26 @@ export default new Vuex.Store({
 
       // after API return success, put new life object to local tree
       commit('setNewLifeObject', {name, finished, parentId, id: result._id});
+    },
+
+    async removeObject({ state }, {objectId}) {
+
+      let result;
+      try {
+        result = ax.remove(`/user/${state.userName}/${objectId}`);
+      } catch (err) {
+        console.error(`[removeObject] request failed, unknown reason.`);
+        return false;
+
+      }
+
+      // check http status coode
+      if (result.status !== 200) {
+
+        console.error(`[removeObject] server returns ${result.status},`);
+        console.error(result.data);
+        return false;
+      }
     }
   }
 });
