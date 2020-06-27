@@ -43,6 +43,15 @@ export default new Vuex.Store({
       state.lifeObjects.appendNewLifeObject(
         payload.name, payload.finished, payload.id, payload.parentId
       );
+    },
+
+    /**
+     * 
+     * @param {*} state Vuex state object
+     * @param {String} id deleting life object's id  
+     */
+    deleteLifeObject(state, id) {
+      state.lifeObjects.deleteLifeObject(id);
     }
 
   },
@@ -148,6 +157,9 @@ export default new Vuex.Store({
         console.error(result.data);
         return false;
       }
+
+      // remove life object from local tree
+      this.commit('deleteLifeObject', objectId);
     }
   }
 });
