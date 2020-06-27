@@ -180,7 +180,7 @@ export default class LifeObject {
     // if target not found, abort
     if (!target) {
       /* eslint-disable-next-line no-console */
-      console.error(`[appendNewLifeObject] No such lifeobject ${targetId}`);
+      console.error(`[deleteLifeObject] No such lifeobject ${targetId}`);
       return false;
     }
 
@@ -198,7 +198,7 @@ export default class LifeObject {
    */
   getTargetSubTree(targetTree, targetId) {
     console.debug(
-      `[getTargetSubTree] target=${targetTree.name} id=${targetTree._id}`
+      `[getTargetSubTree] targetTree.name=${targetTree.name} targetId=${targetId}`
     );
     console.debug(
       `targetTree._id === targetId -> ${targetTree._id === targetId}`
@@ -240,11 +240,11 @@ export default class LifeObject {
    */
   getTargetParentSubTree(targetTree, targetId) {
     console.debug(
-      `[getTargetParentSubTree] target=${targetTree.name} id=${targetTree._id}`
+      `[getTargetParentSubTree] targetTree.name=${targetTree.name} id=${targetId}`
     );
 
     console.debug(
-      `targetTree._id === targetId -> ${targetTree._id === targetId}`
+      `targetTree._id === targetId -> ${targetTree._id == targetId}`
     );
 
     if (!targetTree.children) {
@@ -253,9 +253,9 @@ export default class LifeObject {
     }
 
     // targetTree's children has targetId?
-    const foundtarget = targetTree.children.find(elem => elem.id === targetId);
+    const foundtarget = targetTree.children.find(elem => elem._id === targetId);
 
-    if (foundtarget.length > 0) {
+    if (foundtarget && foundtarget.length > 0) {
       // targetTree's children has targetId
       // return link to target life object node
       return targetTree;

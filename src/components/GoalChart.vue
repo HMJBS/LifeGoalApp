@@ -16,7 +16,7 @@
             class="h3 add-button"
             variant="success"
           />
-          <b-icon-x class="h3 remove-button" variant="danger" />
+          <b-icon-x class="h3 remove-button" variant="danger" v-on:click="showDelObjectModal(lifeGoal._id, lifeGoal.name)" />
         </div>
         <b-card-text>Needed Skills</b-card-text>
         <!-- skillset layer -->
@@ -32,7 +32,7 @@
               class="h3 add-button"
               variant="success"
             />
-            <b-icon-x class="h3 remove-button" variant="danger" />
+            <b-icon-x class="h3 remove-button" variant="danger" v-on:click="showDelObjectModal(skillset._id, skillset.name)" />
             <span v-b-toggle="`collapse-${skillset._id}`" class="expand-button">
               <b-icon icon="arrow-down-short" class="h3 expand-button-expand" />
               <b-icon icon="arrow-up-short" class="h3 expand-button-collapse" />
@@ -54,7 +54,7 @@
                   class="h3 add-button"
                   variant="success"
                 />
-                <b-icon-x class="h3 remove-button" variant="danger" />
+                <b-icon-x class="h3 remove-button" variant="danger" v-on:click="showDelObjectModal(skill._id, skill.name)" />
                 <span v-b-toggle="`collapse-${skill._id}`" class="expand-button">
                   <b-icon icon="arrow-down-short" class="h3 expand-button-expand" />
                   <b-icon icon="arrow-up-short" class="h3 expand-button-collapse" />
@@ -69,7 +69,7 @@
                   sub-title="Read'em All"
                 >
                   <div class="d-flex justify-content-end">
-                    <b-icon-x class="h3 remove-button" variant="danger" />
+                    <b-icon-x class="h3 remove-button" variant="danger" v-on:click="showDelObjectModal(study._id, study.name)" />
                   </div>
                 </b-card>
               </b-collapse>
@@ -96,6 +96,10 @@
         </b-form-group>
       </b-form>
     </b-modal>
+
+    <b-modal :id="DEL_MODAL_ID" title="delete Object" @ok="deleteObject">
+      <h1>Deleting object {{ deletingObjectName }}. Sure? </h1>
+    </b-modal>
   </div>
 </template>
 
@@ -113,7 +117,10 @@ export default {
       // new life object"s name
       newObjectName: "",
       newObjectId: "",
-      ADD_MODAL_ID: "addModal"
+      deletingObjectName: "",
+      deletingObjectId: "",
+      ADD_MODAL_ID: "addModal",
+      DEL_MODAL_ID: "delModal"
     };
   },
   methods: {
@@ -128,18 +135,32 @@ export default {
     },
     registerNewObject: function() {
       // check clikced node has children
+
+      if (!this.newObjectId) {
+        throw new Error('this.newObjectId should not be undefined');
+      }
       this.$store.dispatch("registerNewObject", {
         name: this.newObjectName,
         finished: false,
         parentId: this.newObjectId
       });
 
-      this.$modal.hide("addObject");
+      this.$bvModal.hide("addObject");
       this.newObjectId = "";
       this.newObjectName = "";
     },
-    generateCollapseId: function(collapseId) {
-      return "collapse-" + collapseId;
+
+    showDelObjectModal: function(objectId, objectName) {
+      this.deletingObjectName = objectName;
+      this.deletingObjectId = objectId;
+      this.$bvModal.show(this.DEL_MODAL_ID);
+    },
+    deleteObject: function() {
+      this.$store.dispatch("removeObject", {objectId: this.deletingObjectId});
+      this.deletingObjectName = "";
+      this.deletingObjectId = "";
+      this.$bvModal.hide(this.DEL_MODAL_ID);
+      this.$store.dispatch("getLifeObjectByCurrentUser");
     }
   }
 };

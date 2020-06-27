@@ -101,6 +101,7 @@ export default new Vuex.Store({
      */
     async registerNewObject( { state, commit }, {name, finished, parentId} ) {
 
+      if (typeof parentId === 'undefined') throw new Error('parentId is undefined, use null instead');
       let result;
 
       const payload = {
@@ -136,16 +137,21 @@ export default new Vuex.Store({
       }
 
       // after API return success, put new life object to local tree
-      commit('setNewLifeObject', {name, finished, parentId, id: result._id});
+      commit('setNewLifeObject', {name, finished, parentId, id: result.data._id});
     },
 
     async removeObject({ state }, {objectId}) {
 
       let result;
       try {
-        result = ax.remove(`/user/${state.userName}/${objectId}`);
+
+        if (!objectId) throw Error('passed undefined as ojectId');
+        result = await ax.delete(`/user/${state.userName}/${objectId}`);
       } catch (err) {
+
+        // if server response with unsuceesful code, catched here.
         console.error(`[removeObject] request failed, unknown reason.`);
+        console.error(err);
         return false;
 
       }
@@ -158,8 +164,7 @@ export default new Vuex.Store({
         return false;
       }
 
-      // remove life object from local tree
-      this.commit('deleteLifeObject', objectId);
+      return true;
     }
   }
 });
