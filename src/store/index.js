@@ -43,6 +43,15 @@ export default new Vuex.Store({
       state.lifeObjects.appendNewLifeObject(
         payload.name, payload.finished, payload.id, payload.parentId
       );
+    },
+
+    /**
+     * 
+     * @param {*} state Vuex state object
+     * @param {String} id deleting life object's id  
+     */
+    deleteLifeObject(state, id) {
+      state.lifeObjects.deleteLifeObject(id);
     }
 
   },
@@ -92,6 +101,7 @@ export default new Vuex.Store({
      */
     async registerNewObject( { state, commit }, {name, finished, parentId} ) {
 
+      if (typeof parentId === 'undefined') throw new Error('parentId is undefined, use null instead');
       let result;
 
       const payload = {
@@ -127,7 +137,35 @@ export default new Vuex.Store({
       }
 
       // after API return success, put new life object to local tree
-      commit('setNewLifeObject', {name, finished, parentId, id: result._id});
+      commit('setNewLifeObject', {name, finished, parentId, id: result.data._id});
+    },
+
+    async removeObject({ state, dispatch  }, {objectId}) {
+
+      let result;
+      try {
+
+        if (!objectId) throw Error('passed undefined as ojectId');
+        result = await ax.delete(`/user/${state.userName}/${objectId}`);
+      } catch (err) {
+
+        // if server response with unsuceesful code, catched here.
+        console.error(`[removeObject] request failed, unknown reason.`);
+        console.error(err);
+        return false;
+
+      }
+
+      // check http status coode
+      if (result.status !== 200) {
+
+        console.error(`[removeObject] server returns ${result.status},`);
+        console.error(result.data);
+        return false;
+      }
+
+      dispatch('getLifeObjectByCurrentUser');
+      return true;
     }
   }
 });
