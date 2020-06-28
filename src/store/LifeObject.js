@@ -170,6 +170,7 @@ export default class LifeObject {
    * delete Lifeobject from local object tree
    * @param {String} targetId
    * @returns {bool} true if successed
+   * @deprecated Logic is buggy, don't use
    */
   deleteLifeObject(targetId) {
     let target;
