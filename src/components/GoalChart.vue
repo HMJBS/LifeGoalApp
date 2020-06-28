@@ -8,7 +8,7 @@
         v-bind:key="lifeGoal._id"
         class="life-object-cards"
         v-bind:title="lifeGoal.name"
-        sub-title="None"
+        sub-title="Life Goal"
       >
         <div class="d-flex justify-content-end">
           <b-icon-plus

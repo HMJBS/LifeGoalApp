@@ -140,7 +140,7 @@ export default new Vuex.Store({
       commit('setNewLifeObject', {name, finished, parentId, id: result.data._id});
     },
 
-    async removeObject({ state }, {objectId}) {
+    async removeObject({ state, dispatch  }, {objectId}) {
 
       let result;
       try {
@@ -164,6 +164,7 @@ export default new Vuex.Store({
         return false;
       }
 
+      dispatch('getLifeObjectByCurrentUser');
       return true;
     }
   }
