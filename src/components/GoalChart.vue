@@ -1,6 +1,5 @@
 <template>
   <div class="mb-4">
-    <h1>{{ userName }}'s Life Object Tree</h1>
     <div class="d-flex justify-content-end">
       <b-icon-plus
         v-on:click="showAddObjectModal(null)"
