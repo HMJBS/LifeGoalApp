@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import Register from '@/components/Register.vue'
+import Register from '@/components/prompts/Register.vue'
 import Login from '@/components/prompts/Login.vue'
 import Logout from '@/components/prompts/Logout.vue'
 
