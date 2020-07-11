@@ -42,13 +42,13 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-collapse id="login-collapse" v-model="visibles.login" style="max-width: 50rem;" class="mb-3 float-right">
+    <b-collapse id="login-collapse" v-model="visibles.login" style="width: 200rem; min-width: 33%" class="mb-3 float-right">
       <Login />
     </b-collapse>
-    <b-collapse id="signup-collapse" v-model="visibles.signup" style="max-width: 50rem;" class="mb-3 float-right" >
-      <Register />
+    <b-collapse id="signup-collapse" v-model="visibles.signup" style="width: 200rem; min-width: 33%" class="mb-3 float-right" >
+      <Signup />
     </b-collapse>
-    <b-collapse id="logout-collapse" v-model="visibles.logout" style="max-width: 50rem;" class="mb-3 float-right">
+    <b-collapse id="logout-collapse" v-model="visibles.logout" style="width: 200rem; min-width: 33%" class="mb-3 float-right">
       <Logout />
     </b-collapse>
     <router-view />
@@ -56,14 +56,14 @@
 </template>
 
 <script>
-import Register from '@/components/prompts/Register.vue'
+import Signup from '@/components/prompts/Signup.vue'
 import Login from '@/components/prompts/Login.vue'
 import Logout from '@/components/prompts/Logout.vue'
 
 export default {
   name: 'App',
   components: {
-    Register,
+    Signup,
     Login,
     Logout
   },
