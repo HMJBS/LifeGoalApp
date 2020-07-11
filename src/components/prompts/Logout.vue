@@ -1,6 +1,6 @@
 <template>
   <b-card title="Log Out">
-    <b-button variant="warn">OK?</b-button>
+    <b-button bg-variant="warn">OK?</b-button>
   </b-card>
 </template>
 

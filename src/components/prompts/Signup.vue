@@ -1,14 +1,40 @@
 <template>
   <div class="register">
-    <b-card title="Sign Up">
-      <form>
-        <label for="userNameInput">User</label>
-        <input id="userNameInput" type="text" v-model="userName" />
-        <label for="passwordInput">Password</label>
-        <input id="passwordInput" type="password" v-model="password" />
-        <input type="submit" value="Register" @click="registerUser" @submit.prevent="registerUser" />
-      </form>
-      <span id="queryResult">{{ queryStatus }}</span>
+    <b-card title="Sign Up" style="min-width: 33%">
+      <b-form inline @click="registerUser" @submit.prevent="registerUser">
+        <b-form-group
+          id="input-group-user"
+          label="User Name"
+          label-for="input-user"
+          class="mx-2"
+        >
+          <b-form-input
+            id="input-user"
+            v-model="userName"
+            type="text"
+            required
+            placeholder="user name"
+            class="mx-1"
+          ></b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          id="input-group-password"
+          label="Password"
+          label-for="input-password"
+          class="mx-2"
+        >
+          <b-form-input
+            id="input-password"
+            v-model="password"
+            type="password"
+            required
+            placeholder="password"
+            class="mx-1"
+          ></b-form-input>
+        </b-form-group>
+        <b-button type="submit" variant="primary">Sign Up</b-button>
+      </b-form>
     </b-card>
   </div>
 </template>
