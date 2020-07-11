@@ -19,7 +19,6 @@
 
       <b-button type="submit" variant="primary">Submit</b-button>
     </b-form>
-    <span id="queryResultLable"> {{ queryStatus }}</span>
   </div>
 </template>
 
