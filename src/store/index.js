@@ -6,7 +6,7 @@ import LifeObject from './LifeObject.js'
 const ax = axios.create({
   baseURL: `http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/`,
   timeout: 1000
-});
+})
 
 /* eslint-disable no-console */
 
@@ -14,6 +14,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+
+    /**
+     * Logined?
+     * @type {Boolean}
+     */
+    isLogin: false,
 
     /**
      * user's Name
@@ -31,65 +37,55 @@ export default new Vuex.Store({
   },
   mutations: {
 
-    setUserName(state, payload) {
-      state.userName = payload.userName;
+    setUserName (state, payload) {
+      state.userName = payload.userName
     },
 
-    setLifeObjects(state, payload) {
-      state.lifeObjects = new LifeObject(payload.lifeObjects, state.userName);
+    setLifeObjects (state, payload) {
+      state.lifeObjects = new LifeObject(payload.lifeObjects, state.userName)
     },
 
-    setNewLifeObject(state, payload) {
+    setNewLifeObject (state, payload) {
       state.lifeObjects.appendNewLifeObject(
         payload.name, payload.finished, payload.id, payload.parentId
-      );
+      )
     },
 
     /**
-     * 
+     *
      * @param {*} state Vuex state object
-     * @param {String} id deleting life object's id  
+     * @param {String} id deleting life object's id
      */
-    deleteLifeObject(state, id) {
-      state.lifeObjects.deleteLifeObject(id);
+    deleteLifeObject (state, id) {
+      state.lifeObjects.deleteLifeObject(id)
     }
 
   },
   actions: {
-    async getLifeObjectByCurrentUser({ commit, state }) {
-
+    async getLifeObjectByCurrentUser ({ commit, state }) {
       try {
+        const userName = state.userName
+        if (!userName) { throw new Error(`Invalid UserName ${userName}`) }
 
-        const userName = state.userName;
-        if (!userName) { throw new Error(`Invalid UserName ${userName}`); }
+        console.log(`GET /user/${state.userName}`)
 
-        console.log(`GET /user/${state.userName}`);
+        const res = await ax.get(`/user/${state.userName}`)
+        const lifeObjects = res.data.lifeObjects
 
-        const res = await ax.get(`/user/${state.userName}`);
-        const lifeObjects = res.data.lifeObjects;
-
-        commit('setLifeObjects', { lifeObjects });
-
+        commit('setLifeObjects', { lifeObjects })
       } catch (err) {
-
-        throw err;
+        throw new Error('Failed to get LifeObject tree', err)
       }
     },
 
-    registerNewUser({ commit }, userName) {
-
-      return new Promise( (resolve, reject) => {
-
-        // post by given userName first
-        ax.post('/user', {
-          userName
-        }).then(() => {
-          commit('setUserName', { userName });
-          resolve();
-        }).catch((err) => {
-          reject(err);
-        });
-      });
+    async registerNewUser ({ commit }, userName) {
+      // post by given userName first
+      try {
+        await ax.post('/user', { userName })
+        commit('setUserName', { userName })
+      } catch (err) {
+        throw new Error('Failed to post new user', err)
+      }
     },
 
     /**
@@ -99,73 +95,51 @@ export default new Vuex.Store({
      * @param {Boolean} finsihed is finished
      * @param {String} parentId Id of parent life object
      */
-    async registerNewObject( { state, commit }, {name, finished, parentId} ) {
-
-      if (typeof parentId === 'undefined') throw new Error('parentId is undefined, use null instead');
-      let result;
+    async registerNewObject ({ state, commit }, { name, finished, parentId }) {
+      if (typeof parentId === 'undefined') { throw new Error('parentId is undefined, use null instead') }
 
       const payload = {
         name,
-        finished,
-      };
-
-      console.log(payload);
-
-      // call API
-      try {        
-
-        if( parentId ) {
-
-          // add new life object to non-root object
-          result = await ax.put(`/user/${state.userName}/${parentId}`, payload);
-        
-        } else {
-
-          // add new life object to root
-          result = await ax.put(`/user/${state.userName}`, payload);
-
-        }
-      } catch (err) {
-        throw err;
+        finished
       }
 
-      if (result.status !== 200) {
+      console.log(payload)
 
-        console.error(`[registerNewObject] failed with ${result.status}`);
-        return false;
-
+      // call API
+      let result
+      try {
+        if (parentId) {
+          // add new life object to non-root object
+          result = await ax.put(`/user/${state.userName}/${parentId}`, payload)
+        } else {
+          // add new life object to root
+          result = await ax.put(`/user/${state.userName}`, payload)
+        }
+      } catch (err) {
+        throw new Error('failed to call API', err)
       }
 
       // after API return success, put new life object to local tree
-      commit('setNewLifeObject', {name, finished, parentId, id: result.data._id});
+      commit('setNewLifeObject', { name, finished, parentId, id: result.data._id })
     },
 
-    async removeObject({ state, dispatch  }, {objectId}) {
-
-      let result;
+    /**
+     * Remove lifeObject from tree
+     * @param {*} param0 vuex dummy object
+     * @param {String} param1 lifeObject's Id to remove
+     */
+    async removeObject ({ state, dispatch }, objectId) {
       try {
-
-        if (!objectId) throw Error('passed undefined as ojectId');
-        result = await ax.delete(`/user/${state.userName}/${objectId}`);
+        if (!objectId) throw Error('passed undefined as ojectId')
+        await ax.delete(`/user/${state.userName}/${objectId}`)
       } catch (err) {
-
         // if server response with unsuceesful code, catched here.
-        console.error(`[removeObject] request failed, unknown reason.`);
-        console.error(err);
-        return false;
-
+        console.error('[removeObject] request failed, unknown reason.')
+        console.error(err)
+        throw new Error('remove object API failed', err)
       }
-
-      // check http status coode
-      if (result.status !== 200) {
-
-        console.error(`[removeObject] server returns ${result.status},`);
-        console.error(result.data);
-        return false;
-      }
-
-      dispatch('getLifeObjectByCurrentUser');
-      return true;
+      // get new object tree from server
+      dispatch('getLifeObjectByCurrentUser')
     }
   }
-});
+})
