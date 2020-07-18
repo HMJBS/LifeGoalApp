@@ -1,54 +1,86 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="lg" type="light" variant="light">
-      <b-navbar-brand class="font-weight-bolder" to="/">Life Goal Tracker</b-navbar-brand>
+    <b-navbar
+      toggleable="lg"
+      type="light"
+      variant="light"
+    >
+      <b-navbar-brand
+        class="font-weight-bolder"
+        to="/"
+      >
+        Life Goal Tracker
+      </b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-navbar-toggle target="nav-collapse" />
 
-      <b-collapse id="nav-collapse" is-nav>
+      <b-collapse
+        id="nav-collapse"
+        is-nav
+      >
         <b-navbar-nav>
-          <b-nav-item to="/user">User</b-nav-item>
-          <b-nav-item to="/about">About</b-nav-item>
+          <b-nav-item to="/user">
+            User
+          </b-nav-item>
+          <b-nav-item to="/about">
+            About
+          </b-nav-item>
         </b-navbar-nav>
-
-        <!-- Right Alligned-->
 
         <b-navbar-nav class="ml-auto">
           <b-button
-            variant="light"
             id="loginButton"
+            variant="light"
             aria-controls="login-collapse"
             :aria-expanded="visibles.login ? 'true': 'false'"
             :class="visibles.login ? null : 'collapsed'"
             @click="toggleOnly('login')"
-          >Log In</b-button>
+          >
+            Log In
+          </b-button>
           <b-button
-            variant="light"
             id="signupButton"
+            variant="light"
             aria-controls="signup-collapse"
             :aria-expanded="visibles.signup ? 'true': 'false'"
             :class="visibles.signup ? null : 'collapsed'"
             @click="toggleOnly('signup')"
-          >Sign Up</b-button>
+          >
+            Sign Up
+          </b-button>
           <b-button
-            variant="light"
             id="logoutButton"
+            variant="light"
             aria-controls="logout-collapse"
             :aria-expanded="visibles.logout ? 'true': 'false'"
             :class="visibles.logout ? null : 'collapsed'"
             @click="toggleOnly('logout')"
-          >Log Out</b-button>
-          <b-avatar></b-avatar>
+          >
+            Log Out
+          </b-button>
+          <b-avatar />
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-collapse id="login-collapse" v-model="visibles.login" class="mb-3">
+    <b-collapse
+      id="login-collapse"
+      v-model="visibles.login"
+      class="mb-3"
+    >
       <Login />
     </b-collapse>
-    <b-collapse id="signup-collapse" v-model="visibles.signup" class="mb-3" >
+    <b-collapse
+      id="signup-collapse"
+      v-model="visibles.signup"
+      class="mb-3"
+    >
       <Signup />
     </b-collapse>
-    <b-collapse id="logout-collapse" v-model="visibles.logout" class="mb-3">
+    <b-collapse
+      id="logout-collapse"
+      v-model="visibles.logout"
+      class="mb-3"
+    >
       <Logout />
     </b-collapse>
     <router-view />
@@ -67,43 +99,41 @@ export default {
     Login,
     Logout
   },
-  data() {
+  data () {
     return {
       visibles: {
         login: false,
         signup: false,
         logout: false
       }
-    };
+    }
   },
   methods: {
     /**
      * show only 1 collapse
      */
-    toggleOnly(element) {
+    toggleOnly (element) {
       switch (element) {
         case 'login': {
-          this.visibles.signup = false;
-          this.visibles.logout = false;
-          this.visibles.login = !this.visibles.login;
-          break;
+          this.visibles.signup = false
+          this.visibles.logout = false
+          this.visibles.login = !this.visibles.login
+          break
         }
         case 'signup': {
-          this.visibles.login = false;
-          this.visibles.logout = false;
-          this.visibles.signup = !this.visibles.signup;
-          break;
+          this.visibles.login = false
+          this.visibles.logout = false
+          this.visibles.signup = !this.visibles.signup
+          break
         }
         case 'logout': {
-          this.visibles.login = false;
-          this.visibles.signup = false;
-          this.visibles.logout = !this.visibles.logout;
-          break;
+          this.visibles.login = false
+          this.visibles.signup = false
+          this.visibles.logout = !this.visibles.logout
+          break
         }
       }
     }
   }
-};
+}
 </script>
-
-
