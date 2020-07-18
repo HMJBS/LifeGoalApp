@@ -1,9 +1,17 @@
 <template>
-<div class="home">
-  <GoalChart />
-  <a target="_blank" href="https://icons8.com/icons/set/lifecycle">Life Cycle</a>, <a target="_blank" href="https://icons8.com/icons/set/experience-skill">Experience Skill</a> and other icons by <a target="_blank" href="https://icons8.com">Icons8</a>
-
-</div>
+  <div class="home">
+    <GoalChart v-if="this.$store.state.isLogin" />
+    <a
+      target="_blank"
+      href="https://icons8.com/icons/set/lifecycle"
+    >Life Cycle</a>, <a
+      target="_blank"
+      href="https://icons8.com/icons/set/experience-skill"
+    >Experience Skill</a> and other icons by <a
+      target="_blank"
+      href="https://icons8.com"
+    >Icons8</a>
+  </div>
 </template>
 
 <script>
@@ -11,7 +19,7 @@
 import GoalChart from '@/components/GoalChart.vue'
 
 export default {
-  name: 'home',
+  name: 'Home',
   components: {
     GoalChart
   }

@@ -2,30 +2,33 @@
   <div class="mb-4">
     <div class="d-flex justify-content-end">
       <b-icon-plus
-        v-on:click="showAddObjectModal(null)"
         class="h2 add-button"
         variant="success"
+        @click="showAddObjectModal(null)"
       />
     </div>
-    <b-card-group deck v-if="objectsJson">
+    <b-card-group
+      v-if="objectsJson"
+      deck
+    >
       <!-- Life Object layer -->
       <b-card
         v-for="lifeGoal in objectsJson.data.children"
-        v-bind:key="lifeGoal._id"
+        :key="lifeGoal._id"
         class="life-object-cards"
-        v-bind:title="lifeGoal.name"
+        :title="lifeGoal.name"
         sub-title="Life Goal"
       >
         <div class="d-flex justify-content-end">
           <b-icon-plus
-            v-on:click="showAddObjectModal(lifeGoal._id)"
             class="h3 add-button"
             variant="success"
+            @click="showAddObjectModal(lifeGoal._id)"
           />
           <b-icon-x
             class="h3 remove-button"
             variant="danger"
-            v-on:click="showDelObjectModal(lifeGoal._id, lifeGoal.name)"
+            @click="showDelObjectModal(lifeGoal._id, lifeGoal.name)"
           />
         </div>
         <b-card-text>Needed Skills</b-card-text>
@@ -38,23 +41,35 @@
         >
           <div class="d-flex justify-content-end">
             <b-icon-plus
-              v-on:click="showAddObjectModal(skillset._id)"
               class="h3 add-button"
               variant="success"
+              @click="showAddObjectModal(skillset._id)"
             />
             <b-icon-x
               class="h3 remove-button"
               variant="danger"
-              v-on:click="showDelObjectModal(skillset._id, skillset.name)"
+              @click="showDelObjectModal(skillset._id, skillset.name)"
             />
-            <span v-b-toggle="`collapse-${skillset._id}`" class="expand-button">
-              <b-icon icon="arrow-down-short" class="h3 expand-button-expand" />
-              <b-icon icon="arrow-up-short" class="h3 expand-button-collapse" />
+            <span
+              v-b-toggle="`collapse-${skillset._id}`"
+              class="expand-button"
+            >
+              <b-icon
+                icon="arrow-down-short"
+                class="h3 expand-button-expand"
+              />
+              <b-icon
+                icon="arrow-up-short"
+                class="h3 expand-button-collapse"
+              />
             </span>
           </div>
           <!-- v-binding v-b-toggle don"t work -->
 
-          <b-collapse class="mb-2" :id="`collapse-${skillset._id}`">
+          <b-collapse
+            :id="`collapse-${skillset._id}`"
+            class="mb-2"
+          >
             <!-- skill layer -->
             <b-card
               v-for="skill in skillset.children"
@@ -64,14 +79,14 @@
             >
               <div class="d-flex justify-content-end">
                 <b-icon-plus
-                  v-on:click="showAddObjectModal(skill._id)"
                   class="h3 add-button"
                   variant="success"
+                  @click="showAddObjectModal(skill._id)"
                 />
                 <b-icon-x
                   class="h3 remove-button"
                   variant="danger"
-                  v-on:click="showDelObjectModal(skill._id, skill.name)"
+                  @click="showDelObjectModal(skill._id, skill.name)"
                 />
                 <span
                   v-b-toggle="`collapse-${skill._id}`"
@@ -87,7 +102,10 @@
                   />
                 </span>
               </div>
-              <b-collapse :id="'collapse-' + skill._id" class="mb-2">
+              <b-collapse
+                :id="'collapse-' + skill._id"
+                class="mb-2"
+              >
                 <!-- study layer -->
                 <b-card
                   v-for="study in skill.children"
@@ -99,7 +117,7 @@
                     <b-icon-x
                       class="h3 remove-button"
                       variant="danger"
-                      v-on:click="showDelObjectModal(study._id, study.name)"
+                      @click="showDelObjectModal(study._id, study.name)"
                     />
                   </div>
                 </b-card>
@@ -110,7 +128,11 @@
       </b-card>
     </b-card-group>
 
-    <b-modal :id="ADD_MODAL_ID" title="Add new object" @ok="registerNewObject">
+    <b-modal
+      :id="ADD_MODAL_ID"
+      title="Add new object"
+      @ok="registerNewObject"
+    >
       <b-form>
         <b-form-group
           id="input-group-new-object"
@@ -123,12 +145,16 @@
             type="text"
             required
             placeholder="New Object"
-          ></b-form-input>
+          />
         </b-form-group>
       </b-form>
     </b-modal>
 
-    <b-modal :id="DEL_MODAL_ID" title="delete Object" @ok="deleteObject">
+    <b-modal
+      :id="DEL_MODAL_ID"
+      title="delete Object"
+      @ok="deleteObject"
+    >
       <h1>Deleting object {{ deletingObjectName }}. Sure?</h1>
     </b-modal>
   </div>
@@ -138,15 +164,7 @@
 export default {
   name: 'GoalChart',
   components: {},
-  computed: {
-    objectsJson() {
-      return this.$store.state.lifeObjects;
-    },
-    userName() {
-      return this.$store.state.userName;
-    }
-  },
-  data() {
+  data () {
     return {
       // new life object"s name
       newObjectName: '',
@@ -155,49 +173,57 @@ export default {
       deletingObjectId: '',
       ADD_MODAL_ID: 'addModal',
       DEL_MODAL_ID: 'delModal'
-    };
+    }
+  },
+  computed: {
+    objectsJson () {
+      return this.$store.state.lifeObjects
+    },
+    userName () {
+      return this.$store.state.userName
+    }
   },
   methods: {
-    showAddObjectModal: function(objectId) {
-      this.newObjectId = objectId;
-      this.$bvModal.show(this.ADD_MODAL_ID);
+    showAddObjectModal: function (objectId) {
+      this.newObjectId = objectId
+      this.$bvModal.show(this.ADD_MODAL_ID)
     },
-    hideObjectModal: function() {
-      this.newObjectName = '';
-      this.newObjectId = '';
-      this.$bvModal.hide(this.ADD_MODAL_ID);
+    hideObjectModal: function () {
+      this.newObjectName = ''
+      this.newObjectId = ''
+      this.$bvModal.hide(this.ADD_MODAL_ID)
     },
-    registerNewObject: function() {
+    registerNewObject: function () {
       // check clikced node has children
 
       if (this.newObjectId === undefined) {
-        throw new Error('this.newObjectId should not be undefined');
+        throw new Error('this.newObjectId should not be undefined')
       }
       this.$store.dispatch('registerNewObject', {
         name: this.newObjectName,
         finished: false,
         parentId: this.newObjectId
-      });
+      })
 
-      this.$bvModal.hide('addObject');
-      this.newObjectId = '';
-      this.newObjectName = '';
+      this.$bvModal.hide('addObject')
+      this.newObjectId = ''
+      this.newObjectName = ''
     },
 
-    showDelObjectModal: function(objectId, objectName) {
-      this.deletingObjectName = objectName;
-      this.deletingObjectId = objectId;
-      this.$bvModal.show(this.DEL_MODAL_ID);
+    showDelObjectModal: function (objectId, objectName) {
+      this.deletingObjectName = objectName
+      this.deletingObjectId = objectId
+      this.$bvModal.show(this.DEL_MODAL_ID)
     },
-    deleteObject: function() {
-      this.$store.dispatch('removeObject', { objectId: this.deletingObjectId });
-      this.deletingObjectName = '';
-      this.deletingObjectId = '';
-      this.$bvModal.hide(this.DEL_MODAL_ID);
-      this.$store.dispatch('getLifeObjectByCurrentUser');
+    deleteObject: function () {
+      this.$store.dispatch('removeObject', { objectId: this.deletingObjectId })
+      this.deletingObjectName = ''
+      this.deletingObjectId = ''
+      this.$bvModal.hide(this.DEL_MODAL_ID)
+      this.$store.dispatch('getLifeObjectByCurrentUser')
     }
   }
-};
+}
 </script>
 
 <style scoped>
