@@ -33,7 +33,7 @@
             variant="light"
             aria-controls="login-collapse"
             :aria-expanded="visibles.login ? 'true': 'false'"
-            :class="visibles.login ? null : 'collapsed'"
+            :class="[visibles.login ? '': collapsed, this.$store.state.isLogin ? 'd-none' : 'd-inline-block' ]"
             @click="toggleOnly('login')"
           >
             Log In
@@ -42,8 +42,9 @@
             id="signupButton"
             variant="light"
             aria-controls="signup-collapse"
+            :display="this.$store.state.isLogin ? 'none' : 'inline-block'"
             :aria-expanded="visibles.signup ? 'true': 'false'"
-            :class="visibles.signup ? null : 'collapsed'"
+            :class="[visibles.signup ? '': collapsed, this.$store.state.isLogin ? 'd-none' : 'd-inline-block' ]"
             @click="toggleOnly('signup')"
           >
             Sign Up
@@ -52,8 +53,9 @@
             id="logoutButton"
             variant="light"
             aria-controls="logout-collapse"
+            :display="this.$store.state.isLogin ? 'inline-block' : 'none'"
             :aria-expanded="visibles.logout ? 'true': 'false'"
-            :class="visibles.logout ? null : 'collapsed'"
+            :class="[visibles.logout ? '': collapsed, this.$store.state.isLogin ? 'd-inline-block' : 'd-none' ]"
             @click="toggleOnly('logout')"
           >
             Log Out
@@ -107,6 +109,17 @@ export default {
         logout: false
       }
     }
+  },
+  mounted () {
+    // watch for store.isLogin and collapse prompts
+    this.$store.watch((state, getters) => state.isLogin, (newValue, oldValue) => {
+      if (newValue) {
+        this.visibles.login = false
+        this.visibles.signup = false
+      } else {
+        this.visibles.logout = false
+      }
+    })
   },
   methods: {
     /**
