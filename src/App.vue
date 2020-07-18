@@ -60,7 +60,16 @@
           >
             Log Out
           </b-button>
-          <b-avatar />
+          <div
+            v-if="this.$store.state.isLogin"
+            id="user-info"
+            class="d-inline-block border px-2"
+          >
+            <b-avatar class="m-1" />
+            <span
+              class="m-2"
+            >{{ this.$store.state.userName }}</span>
+          </div>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -112,14 +121,17 @@ export default {
   },
   mounted () {
     // watch for store.isLogin and collapse prompts
-    this.$store.watch((state, getters) => state.isLogin, (newValue, oldValue) => {
-      if (newValue) {
-        this.visibles.login = false
-        this.visibles.signup = false
-      } else {
-        this.visibles.logout = false
+    this.$store.watch(
+      (state, getters) => state.isLogin,
+      (newValue, oldValue) => {
+        if (newValue) {
+          this.visibles.login = false
+          this.visibles.signup = false
+        } else {
+          this.visibles.logout = false
+        }
       }
-    })
+    )
   },
   methods: {
     /**
