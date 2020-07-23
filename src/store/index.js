@@ -78,10 +78,10 @@ export default new Vuex.Store({
       }
     },
 
-    async registerNewUser ({ commit }, userName) {
+    async registerNewUser ({ commit }, { userName, password }) {
       // post by given userName first
       try {
-        await ax.post('/user', { userName })
+        await ax.post('/user', { userName, password })
         commit('setUserName', { userName })
       } catch (err) {
         throw new Error('Failed to post new user', err)
