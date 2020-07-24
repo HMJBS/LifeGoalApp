@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <div class="d-flex justify-content-end">
+    <div class="justify-content-end">
       <b-icon-plus
         class="h2 add-button"
         variant="success"
@@ -9,6 +9,8 @@
     </div>
     <b-card-group
       v-if="objectsJson"
+      id="life-objects-deck"
+      class="d-flex flex-wrap"
       deck
     >
       <!-- Life Object layer -->
@@ -242,5 +244,10 @@ span.expand-button:hover {
 .collapsed > .expand-button-collapse,
 :not(.collapsed) > .expand-button-expand {
   display: none;
+}
+
+.life-object-cards {
+  min-width: 20rem;
+
 }
 </style>
