@@ -5,7 +5,8 @@ import LifeObject from './LifeObject.js'
 
 const ax = axios.create({
   baseURL: `http://${process.env.VUE_APP_BE_HOST}:${process.env.VUE_APP_BE_PORT}/`,
-  timeout: 1000
+  timeout: 1000,
+  withCredentials: true
 })
 
 /* eslint-disable no-console */
@@ -37,12 +38,15 @@ export default new Vuex.Store({
   },
   mutations: {
 
-    setUserName (state, payload) {
-      state.userName = payload.userName
+    setUserName (state, newUsername) {
+      state.userName = newUsername
     },
 
     setLifeObjects (state, payload) {
       state.lifeObjects = new LifeObject(payload.lifeObjects, state.userName)
+    },
+    clearLifeObjects (state) {
+      state.lifeObjects = null
     },
 
     setNewLifeObject (state, payload) {
@@ -58,34 +62,43 @@ export default new Vuex.Store({
      */
     deleteLifeObject (state, id) {
       state.lifeObjects.deleteLifeObject(id)
+    },
+
+    setIsLogin (state, value) {
+      state.isLogin = value
     }
 
   },
   actions: {
     async getLifeObjectByCurrentUser ({ commit, state }) {
-      try {
-        const userName = state.userName
-        if (!userName) { throw new Error(`Invalid UserName ${userName}`) }
+      const userName = state.userName
+      if (!userName) { throw new Error(`Invalid UserName ${userName}`) }
 
-        console.log(`GET /user/${state.userName}`)
+      console.log(`GET /user/${state.userName}`)
 
-        const res = await ax.get(`/user/${state.userName}`)
-        const lifeObjects = res.data.lifeObjects
+      const res = await ax.get(`/user/${state.userName}`)
+      const lifeObjects = res.data.lifeObjects
 
-        commit('setLifeObjects', { lifeObjects })
-      } catch (err) {
-        throw new Error('Failed to get LifeObject tree', err)
-      }
+      commit('setLifeObjects', { lifeObjects })
     },
 
-    async registerNewUser ({ commit }, { userName, password }) {
-      // post by given userName first
-      try {
-        await ax.post('/user', { userName, password })
-        commit('setUserName', { userName })
-      } catch (err) {
-        throw new Error('Failed to post new user', err)
-      }
+    async registerNewUser (store, { userName, password }) {
+      await ax.post('/user', { userName, password })
+    },
+
+    async login ({ commit, dispatch }, { userName, password }) {
+      await ax.post('/login', { userName, password })
+      commit('setIsLogin', true)
+      commit('setUserName', userName)
+      commit('clearLifeObjects')
+      dispatch('getLifeObjectByCurrentUser')
+    },
+
+    async logout ({ commit }) {
+      await ax.get('/logout')
+      commit('setIsLogin', false)
+      commit('setUserName', '')
+      commit('clearLifeObjects')
     },
 
     /**
@@ -128,7 +141,7 @@ export default new Vuex.Store({
      * @param {*} param0 vuex dummy object
      * @param {String} param1 lifeObject's Id to remove
      */
-    async removeObject ({ state, dispatch }, objectId) {
+    async removeObject ({ state, dispatch }, { objectId }) {
       try {
         if (!objectId) throw Error('passed undefined as ojectId')
         await ax.delete(`/user/${state.userName}/${objectId}`)
