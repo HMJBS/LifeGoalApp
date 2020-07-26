@@ -108,32 +108,33 @@ export default new Vuex.Store({
      * @param {Boolean} finsihed is finished
      * @param {String} parentId Id of parent life object
      */
-    async registerNewObject ({ state, commit }, { name, finished, parentId }) {
+    async registerNewObject ({ state, dispatch }, { name, detail, deadline, finished, parentId }) {
       if (typeof parentId === 'undefined') { throw new Error('parentId is undefined, use null instead') }
 
       const payload = {
         name,
+        detail,
+        deadline,
         finished
       }
 
       console.log(payload)
 
       // call API
-      let result
       try {
         if (parentId) {
           // add new life object to non-root object
-          result = await ax.put(`/user/${state.userName}/${parentId}`, payload)
+          await ax.put(`/user/${state.userName}/${parentId}`, payload)
         } else {
           // add new life object to root
-          result = await ax.put(`/user/${state.userName}`, payload)
+          await ax.put(`/user/${state.userName}`, payload)
         }
       } catch (err) {
         throw new Error('failed to call API', err)
       }
 
-      // after API return success, put new life object to local tree
-      commit('setNewLifeObject', { name, finished, parentId, id: result.data._id })
+      // update tree
+      dispatch('getLifeObjectByCurrentUser')
     },
 
     /**

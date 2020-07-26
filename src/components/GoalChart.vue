@@ -19,7 +19,8 @@
         :key="lifeGoal._id"
         class="life-object-cards"
         :title="lifeGoal.name"
-        sub-title="Life Goal"
+        :sub-title="lifeGoal.detail"
+        header="Life Goal"
       >
         <div class="d-flex justify-content-end">
           <b-icon-plus
@@ -39,7 +40,8 @@
           v-for="skillset in lifeGoal.children"
           :key="skillset._id"
           :title="skillset.name"
-          sub-title="REBOK I guess."
+          :sub-title="skillset.detail"
+          header="Skillset"
         >
           <div class="d-flex justify-content-end">
             <b-icon-plus
@@ -77,7 +79,8 @@
               v-for="skill in skillset.children"
               :key="skill._id"
               :title="skill.name"
-              sub-title="Goup"
+              :sub-title="skill.detail"
+              header="Skill"
             >
               <div class="d-flex justify-content-end">
                 <b-icon-plus
@@ -113,7 +116,8 @@
                   v-for="study in skill.children"
                   :key="study._id"
                   :title="study.name"
-                  sub-title="Read'em All"
+                  :sub-title="study.detail"
+                  header="Study"
                 >
                   <div class="d-flex justify-content-end">
                     <b-icon-x
@@ -149,6 +153,48 @@
             placeholder="New Object"
           />
         </b-form-group>
+        <b-form-group
+          id="input-group-detail"
+          label="Detail"
+          label-for="textarea-new-object-detail"
+        >
+          <b-form-textarea
+            id="textarea-new-object-detail"
+            v-model="newObjectDetail"
+            placeholder="Details of your life object."
+            rows="3"
+            max-rows="6"
+          />
+        </b-form-group>
+
+        <b-form-group
+          id="input-group-deadlilne"
+          label="Deadline"
+          label-for="datepicker-deadline"
+        />
+        <b-form-datepicker
+          id="datepicker-deadline"
+          v-model="newObjectDeadline"
+          inline
+        />
+        <b-button
+          id="datepicker-clear-button"
+          variant="primary"
+          @click="newObjectDeadline = null"
+        >
+          Clear
+        </b-button>
+        <b-form-group>
+          <b-form-checkbox
+            id="finished-checkbox"
+            v-model="newObjectFinished"
+            name="checkbox-1"
+            value="true"
+            unchecked-value="false"
+          >
+            Already finished?
+          </b-form-checkbox>
+        </b-form-group>
       </b-form>
     </b-modal>
 
@@ -170,7 +216,10 @@ export default {
     return {
       // new life object"s name
       newObjectName: '',
-      newObjectId: '',
+      newObjectDetail: '',
+      newObjectFinished: 'false',
+      newObjectDeadline: null,
+      parentId: '',
       deletingObjectName: '',
       deletingObjectId: '',
       ADD_MODAL_ID: 'addModal',
@@ -187,29 +236,34 @@ export default {
   },
   methods: {
     showAddObjectModal: function (objectId) {
-      this.newObjectId = objectId
+      this.parentId = objectId
       this.$bvModal.show(this.ADD_MODAL_ID)
     },
     hideObjectModal: function () {
       this.newObjectName = ''
-      this.newObjectId = ''
+      this.parentId = ''
       this.$bvModal.hide(this.ADD_MODAL_ID)
     },
     registerNewObject: function () {
       // check clikced node has children
 
-      if (this.newObjectId === undefined) {
-        throw new Error('this.newObjectId should not be undefined')
+      if (this.parentId === undefined) {
+        throw new Error('this.parentId should not be undefined')
       }
       this.$store.dispatch('registerNewObject', {
         name: this.newObjectName,
-        finished: false,
-        parentId: this.newObjectId
+        detail: this.newObjectDetail,
+        deadline: this.newObjectDeadline,
+        finished: this.newObjectFinished === 'true',
+        parentId: this.parentId
       })
 
       this.$bvModal.hide('addObject')
-      this.newObjectId = ''
+      this.parentId = ''
       this.newObjectName = ''
+      this.newObjectDetail = ''
+      this.newObjectDeadline = null
+      this.newObjectFinished = 'false'
     },
 
     showDelObjectModal: function (objectId, objectName) {
@@ -221,6 +275,9 @@ export default {
       this.$store.dispatch('removeObject', { objectId: this.deletingObjectId })
       this.deletingObjectName = ''
       this.deletingObjectId = ''
+      this.newObjectDetail = ''
+      this.newObjectDeadline = null
+      this.newObjectFinished = 'false'
       this.$bvModal.hide(this.DEL_MODAL_ID)
       this.$store.dispatch('getLifeObjectByCurrentUser')
     }
